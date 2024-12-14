@@ -1,6 +1,6 @@
 ## Ugreen LED Controller Installer
 
-This repository contains a script to install the necessary software for controlling Ugreen LED controllers.
+This repository contains a bash script to install the necessary software for controlling Ugreen LED controllers.
 
 There are two ways to use this script:
 
@@ -35,7 +35,7 @@ chmod +x install_ugreen_leds_controller.sh
 
 **Note:** This script might require administrative privileges (sudo) depending on your system configuration. 
 
-This script will download and install the necessary software to control your Ugreen LED controller.
+This script will download and install the necessary software from [https://github.com/miskcoo/ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller) to control your Ugreen LED controller.
 
 **Disclaimer:** 
 
