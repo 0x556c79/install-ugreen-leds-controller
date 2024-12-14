@@ -90,7 +90,7 @@ chmod 644 /etc/ugreen-leds.conf
 
 # Step 7: Detect active network interfaces and configure services
 echo "Detecting network interfaces..."
-NETWORK_INTERFACES=($(ifconfig | grep -oP 'enp[0-9]+[a-z][0-9]+'))
+NETWORK_INTERFACES=($(ip -br link show | awk '$1 !~ /^(lo|docker|veth|br|vb)/ && $2 == "UP" {print $1}'))
 
 if [ ${#NETWORK_INTERFACES[@]} -eq 0 ]; then
     echo "Warning: No network interfaces detected. Skipping ugreen-netdevmon service setup."
