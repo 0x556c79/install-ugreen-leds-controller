@@ -24,9 +24,6 @@ INSTALL_HOME=$(eval echo ~$INSTALL_USER)
 INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
 cd $INSTALL_HOME
 
-# Change ownership to the original user
-chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
-
 # Create a temporary file to store the installation directory
 INSTALL_DIR_FILE=$(mktemp)
 echo "$INSTALL_DIR" > "$INSTALL_DIR_FILE"
