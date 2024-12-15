@@ -73,6 +73,8 @@ cd "$INSTALL_HOME" || {
 
 # Clone the repository
 if git clone https://github.com/miskcoo/ugreen_leds_controller.git "$INSTALL_DIR" -q; then
+    # Change ownership to the original user
+    chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
     echo "Repository successfully cloned into $INSTALL_DIR"
 else
     echo "Repository cloning failed"
@@ -82,7 +84,7 @@ fi
 # Install the kernel module
 echo "Installing the kernel module..."
 mkdir -p "/lib/modules/$(uname -r)/extra"
-curl -o "/lib/modules/$(uname -r)/extra/led-ugreen.ko" "${MODULE_URL}" || exit 1
+curl -so "/lib/modules/$(uname -r)/extra/led-ugreen.ko" "${MODULE_URL}" || echo "Kernel module download failed. Exiting"; exit 1
 chmod 644 "/lib/modules/$(uname -r)/extra/led-ugreen.ko"
 
 # Create kernel module load configuration
@@ -102,9 +104,9 @@ modprobe -a i2c-dev led-ugreen ledtrig-oneshot ledtrig-netdev
 
 # Ask user if they want to modify the configuration file
 echo "Do you want to modify the LED configuration file now? (y/n)"
-read -r MODIFY_CONF
+read -r MODIFY_CONF < /dev/tty
 if [[ "$MODIFY_CONF" == "y" ]]; then
-    nano $INSTALL_DIR/scripts/ugreen-leds.conf
+    nano "$INSTALL_DIR/scripts/ugreen-leds.conf"
 fi
 
 # Copy the configuration file
