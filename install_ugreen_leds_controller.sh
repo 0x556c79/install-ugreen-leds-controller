@@ -45,7 +45,7 @@ fi
 # Variables for remount paths
 BOOT_POOL_PATH="boot-pool/ROOT/${TRUENAS_VERSION}"
 
-# Step 1: Remount boot-pool datasets with write access
+# Remount boot-pool datasets with write access
 echo "Remounting boot-pool datasets with write access..."
 mount -o remount,rw "${BOOT_POOL_PATH}/usr" || exit 1
 mount -o remount,rw "${BOOT_POOL_PATH}/etc" || exit 1
@@ -84,7 +84,7 @@ fi
 # Install the kernel module
 echo "Installing the kernel module..."
 mkdir -p "/lib/modules/$(uname -r)/extra"
-curl -so "/lib/modules/$(uname -r)/extra/led-ugreen.ko" "${MODULE_URL}" || echo "Kernel module download failed. Exiting"; exit 1
+curl -so "/lib/modules/$(uname -r)/extra/led-ugreen.ko" "${MODULE_URL}" || echo "Kernel module download failed. Exiting" exit 1
 chmod 644 "/lib/modules/$(uname -r)/extra/led-ugreen.ko"
 
 # Create kernel module load configuration
@@ -174,5 +174,9 @@ else
     systemctl start "ugreen-netdevmon@${CHOSEN_INTERFACE}"
     systemctl enable "ugreen-netdevmon@${CHOSEN_INTERFACE}"
 fi
+
+echo "Remounting boot-pool datasets with read-only access..."
+mount -o remount,ro "${BOOT_POOL_PATH}/usr" || exit 1
+mount -o remount,ro "${BOOT_POOL_PATH}/etc" || exit 1
 
 echo "Setup complete. Reboot your system to verify."
