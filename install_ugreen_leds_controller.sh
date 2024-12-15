@@ -50,14 +50,13 @@ echo "Remounting boot-pool datasets with write access..."
 mount -o remount,rw "${BOOT_POOL_PATH}/usr" || exit 1
 mount -o remount,rw "${BOOT_POOL_PATH}/etc" || exit 1
 
+# Clone the Ugreen LEDs Controller repository
+echo "Cloning Ugreen LEDs Controller repository..."
+
 # Check if INSTALL_DIR_FILE is set and exists
 if [ -n "$INSTALL_DIR_FILE" ] && [ -f "$INSTALL_DIR_FILE" ]; then
     INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
 fi
-
-# Clone the Ugreen LEDs Controller repository
-echo "Cloning Ugreen LEDs Controller repository..."
-
 # Determine the user and clone directory
 if [ -n "$SUDO_USER" ]; then
     INSTALL_USER=$SUDO_USER
@@ -68,7 +67,6 @@ else
 fi
 # Use INSTALL_DIR if set, otherwise create a default
 if [ -z "$INSTALL_DIR" ]; then
-    echo "Creating install directory..."
     INSTALL_HOME=$(eval echo ~$INSTALL_USER)
     INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
     cd $INSTALL_HOME
