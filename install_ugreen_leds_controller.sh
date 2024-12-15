@@ -58,23 +58,23 @@ fi
 # Clone the Ugreen LEDs Controller repository
 echo "Cloning Ugreen LEDs Controller repository..."
 
-# Determine the clone directory
-if [ -n "$INSTALL_DIR" ]; then
-    CLONE_DIR="$INSTALL_DIR/ugreen_leds_controller"
+# Determine the user and clone directory
+if [ -n "$SUDO_USER" ]; then
+    INSTALL_USER=$SUDO_USER
+elif [ -n "$USER" ]; then
+    INSTALL_USER=$USER
 else
-    # Determine the user
-    if [ -n "$SUDO_USER" ]; then
-        INSTALL_USER=$SUDO_USER
-    elif [ -n "$USER" ]; then
-        INSTALL_USER=$USER
-    else
-        INSTALL_USER=$(id -un)
-    fi
-    # Use INSTALL_DIR if set, otherwise create a default
-    if [ -z "$INSTALL_DIR" ]; then
-        INSTALL_HOME=$(eval echo ~$INSTALL_USER)
-        INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-    fi
+    INSTALL_USER=$(id -un)
+fi
+# Use INSTALL_DIR if set, otherwise create a default
+if [ -z "$INSTALL_DIR" ]; then
+    INSTALL_HOME=$(eval echo ~$INSTALL_USER)
+    INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
+    cd $INSTALL_HOME
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" ; exit 1
+else
+    cd $INSTALL_HOME
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" ; exit 1
 fi
 
 # Install the kernel module
