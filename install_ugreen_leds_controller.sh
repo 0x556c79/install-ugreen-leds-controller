@@ -66,14 +66,17 @@ else
     INSTALL_USER=$(id -un)
 fi
 # Use INSTALL_DIR if set, otherwise create a default
+if [ "$PWD" != "$INSTALL_HOME" ]; then
+    cd "$INSTALL_HOME" || { 
+        echo "Failed to change directory to $INSTALL_HOME"; 
+        exit 1; 
+    }
+fi
 if [ -z "$INSTALL_DIR" ]; then
     INSTALL_HOME=$(eval echo ~$INSTALL_USER)
     INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-    cd $INSTALL_HOME
     git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
 else
-    echo "Install install directory found!"
-    cd $INSTALL_HOME
     git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
 fi
 
