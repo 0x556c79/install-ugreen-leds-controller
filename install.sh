@@ -34,7 +34,7 @@ chmod 666 "$INSTALL_DIR_FILE"
 
 # Download the installation script
 echo "Downloading original installation script..."
-curl -L https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh
+curl -Ls https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh
 
 # Make the script executable
 chmod +x install_ugreen_leds_controller.sh
