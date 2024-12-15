@@ -45,6 +45,7 @@ fi
 # Variables for remount paths
 BOOT_POOL_PATH="boot-pool/ROOT/${TRUENAS_VERSION}"
 
+# Until next reboot we need write access
 # Remount boot-pool datasets with write access
 echo "Remounting boot-pool datasets with write access..."
 mount -o remount,rw "${BOOT_POOL_PATH}/usr" || exit 1
