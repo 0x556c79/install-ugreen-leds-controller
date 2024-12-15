@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Ensure script is run as root
 if [ "$EUID" -ne 0 ]; then
@@ -49,20 +50,40 @@ echo "Remounting boot-pool datasets with write access..."
 mount -o remount,rw "${BOOT_POOL_PATH}/usr" || exit 1
 mount -o remount,rw "${BOOT_POOL_PATH}/etc" || exit 1
 
-# Step 2: Clone the Ugreen LEDs Controller repository
-echo "Cloning Ugreen LEDs Controller repository..."
-cd /root
-if [ ! -d "/root/ugreen_leds_controller" ]; then
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git || exit 1
+# Check if INSTALL_DIR_FILE is set and exists
+if [ -n "$INSTALL_DIR_FILE" ] && [ -f "$INSTALL_DIR_FILE" ]; then
+    INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
 fi
 
-# Step 3: Download and install the kernel module
-echo "Downloading and installing the kernel module..."
+# Clone the Ugreen LEDs Controller repository
+echo "Cloning Ugreen LEDs Controller repository..."
+
+# Determine the clone directory
+if [ -n "$INSTALL_DIR" ]; then
+    CLONE_DIR="$INSTALL_DIR/ugreen_leds_controller"
+else
+    # Determine the user
+    if [ -n "$SUDO_USER" ]; then
+        INSTALL_USER=$SUDO_USER
+    elif [ -n "$USER" ]; then
+        INSTALL_USER=$USER
+    else
+        INSTALL_USER=$(id -un)
+    fi
+    # Use INSTALL_DIR if set, otherwise create a default
+    if [ -z "$INSTALL_DIR" ]; then
+        INSTALL_HOME=$(eval echo ~$INSTALL_USER)
+        INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
+    fi
+fi
+
+# Install the kernel module
+echo "Installing the kernel module..."
 mkdir -p "/lib/modules/$(uname -r)/extra"
 curl -o "/lib/modules/$(uname -r)/extra/led-ugreen.ko" "${MODULE_URL}" || exit 1
 chmod 644 "/lib/modules/$(uname -r)/extra/led-ugreen.ko"
 
-# Step 4: Create kernel module load configuration
+# Create kernel module load configuration
 echo "Creating kernel module load configuration..."
 cat <<EOL > /etc/modules-load.d/ugreen-led.conf
 i2c-dev
@@ -72,23 +93,23 @@ ledtrig-netdev
 EOL
 chmod 644 /etc/modules-load.d/ugreen-led.conf
 
-# Step 5: Load kernel modules
+# Load kernel modules
 echo "Loading kernel modules..."
 depmod
 modprobe -a i2c-dev led-ugreen ledtrig-oneshot ledtrig-netdev
 
-# Step 6: Ask user if they want to modify the configuration file
+# Ask user if they want to modify the configuration file
 echo "Do you want to modify the LED configuration file now? (y/n)"
 read -r MODIFY_CONF
 if [[ "$MODIFY_CONF" == "y" ]]; then
-    nano /root/ugreen_leds_controller/scripts/ugreen-leds.conf
+    nano $INSTALL_DIR/scripts/ugreen-leds.conf
 fi
 
 # Copy the configuration file
-cp /root/ugreen_leds_controller/scripts/ugreen-leds.conf /etc/ugreen-leds.conf
+cp $INSTALL_DIR/scripts/ugreen-leds.conf /etc/ugreen-leds.conf
 chmod 644 /etc/ugreen-leds.conf
 
-# Step 7: Detect active network interfaces and configure services
+# Detect active network interfaces and configure services
 echo "Detecting network interfaces..."
 NETWORK_INTERFACES=($(ip -br link show | awk '$1 !~ /^(lo|docker|veth|br|vb)/ && $2 == "UP" {print $1}'))
 
@@ -123,9 +144,9 @@ else
     fi
 fi
 
-# Step 8: Copy scripts and configure services
+# Copy scripts and configure services
 echo "Setting up systemd services..."
-cd /root/ugreen_leds_controller
+cd $INSTALL_DIR
 
 scripts=("ugreen-diskiomon" "ugreen-netdevmon" "ugreen-probe-leds")
 for script in "${scripts[@]}"; do
