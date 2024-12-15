@@ -53,31 +53,30 @@ mount -o remount,rw "${BOOT_POOL_PATH}/etc" || exit 1
 # Clone the Ugreen LEDs Controller repository
 echo "Cloning Ugreen LEDs Controller repository..."
 
-# Check if INSTALL_DIR_FILE is set and exists
-if [ -n "$INSTALL_DIR_FILE" ] && [ -f "$INSTALL_DIR_FILE" ]; then
-    INSTALL_DIR=$(cat "$INSTALL_DIR_FILE")
+# Get the current non-root user and their home directory
+INSTALL_USER=${SUDO_USER:-$USER}
+INSTALL_HOME=$(eval echo ~$INSTALL_USER)
+
+# Set the target directory for cloning
+INSTALL_DIR=${INSTALL_DIR:-"$INSTALL_HOME/ugreen_leds_controller"}
+
+# Ensure the home directory exists and navigate to it
+if [ ! -d "$INSTALL_HOME" ]; then
+    echo "Home directory for $INSTALL_USER does not exist. Exiting."
+    exit 1
 fi
-# Determine the user and clone directory
-if [ -n "$SUDO_USER" ]; then
-    INSTALL_USER=$SUDO_USER
-elif [ -n "$USER" ]; then
-    INSTALL_USER=$USER
+
+cd "$INSTALL_HOME" || { 
+    echo "Failed to change directory to $INSTALL_HOME"; 
+    exit 1; 
+}
+
+# Clone the repository
+if git clone https://github.com/miskcoo/ugreen_leds_controller.git "$INSTALL_DIR" -q; then
+    echo "Repository successfully cloned into $INSTALL_DIR"
 else
-    INSTALL_USER=$(id -un)
-fi
-# Use INSTALL_DIR if set, otherwise create a default
-if [ "$PWD" != "$INSTALL_HOME" ]; then
-    cd "$INSTALL_HOME" || { 
-        echo "Failed to change directory to $INSTALL_HOME"; 
-        exit 1; 
-    }
-fi
-if [ -z "$INSTALL_DIR" ]; then
-    INSTALL_HOME=$(eval echo ~$INSTALL_USER)
-    INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git -q || echo "repository cloning failed" exit 1
-else
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git -q || echo "repository cloning failed" exit 1
+    echo "Repository cloning failed"
+    exit 1
 fi
 
 # Install the kernel module
