@@ -176,8 +176,4 @@ else
     systemctl enable "ugreen-netdevmon@${CHOSEN_INTERFACE}"
 fi
 
-echo "Remounting boot-pool datasets with read-only access..."
-mount -o remount,ro "${BOOT_POOL_PATH}/usr" || exit 1
-mount -o remount,ro "${BOOT_POOL_PATH}/etc" || exit 1
-
 echo "Setup complete. Reboot your system to verify."
