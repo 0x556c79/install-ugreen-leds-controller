@@ -68,13 +68,15 @@ else
 fi
 # Use INSTALL_DIR if set, otherwise create a default
 if [ -z "$INSTALL_DIR" ]; then
+    echo "Creating install directory..."
     INSTALL_HOME=$(eval echo ~$INSTALL_USER)
     INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
     cd $INSTALL_HOME
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" ; exit 1
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
 else
+    echo "Install install directory found!"
     cd $INSTALL_HOME
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" ; exit 1
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
 fi
 
 # Install the kernel module
