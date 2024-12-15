@@ -74,7 +74,7 @@ cd "$INSTALL_HOME" || {
 # Clone the repository
 if git clone https://github.com/miskcoo/ugreen_leds_controller.git "$INSTALL_DIR" -q; then
     # Change ownership to the original user
-    chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
+    chown -R $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
     echo "Repository successfully cloned into $INSTALL_DIR"
 else
     echo "Repository cloning failed"
