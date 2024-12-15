@@ -14,7 +14,7 @@ else
 fi
 
 INSTALL_HOME=$(eval echo ~$INSTALL_USER)
-INSTALL_DIR="${INSTALL_HOME}/ugreen-leds-controller"
+INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
 
 # Ensure script is run with sudo
 if [ "$EUID" -ne 0 ]; then
@@ -31,7 +31,7 @@ chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
 
 # Download the installation script
 echo "Downloading installation script..."
-curl -L https://raw.githubusercontent.com/0x556c79/install-ugreen-leds-controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh
+curl -L https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh
 
 # Make the script executable
 chmod +x install_ugreen_leds_controller.sh
