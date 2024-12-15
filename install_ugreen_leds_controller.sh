@@ -75,9 +75,9 @@ fi
 if [ -z "$INSTALL_DIR" ]; then
     INSTALL_HOME=$(eval echo ~$INSTALL_USER)
     INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git -q || echo "repository cloning failed" exit 1
 else
-    git clone https://github.com/miskcoo/ugreen_leds_controller.git || echo "repository cloning failed" exit 1
+    git clone https://github.com/miskcoo/ugreen_leds_controller.git -q || echo "repository cloning failed" exit 1
 fi
 
 # Install the kernel module
