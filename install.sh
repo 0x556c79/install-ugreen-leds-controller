@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Ensure script is run with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root or with sudo"
+    exit 1
+fi
+
 # UGREEN LEDs Controller Installer
 echo "Installing UGREEN LEDs Controller..."
 
@@ -13,21 +19,13 @@ else
     INSTALL_USER=$(id -un)
 fi
 
-# Use INSTALL_DIR if set, otherwise create a default
-if [ -z "$INSTALL_DIR" ]; then
-    INSTALL_HOME=$(eval echo ~$INSTALL_USER)
-    INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-fi
-
-# Ensure script is run with sudo
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root or with sudo"
-    exit 1
-fi
+# Set INSTALL_DIR
+INSTALL_HOME=$(eval echo ~$INSTALL_USER)
+INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
 
 # Create installation directory
 mkdir -p "$INSTALL_DIR"
-cd "$INSTALL_DIR"
+cd $INSTALL_HOME
 
 # Change ownership to the original user
 chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
@@ -52,4 +50,3 @@ INSTALL_DIR_FILE="$INSTALL_DIR_FILE" ./install_ugreen_leds_controller.sh
 rm "$INSTALL_DIR_FILE"
 
 echo "UGREEN LEDs Controller installation completed successfully!"
-echo "Installed in: $INSTALL_DIR"
