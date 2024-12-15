@@ -11,8 +11,8 @@ bash <(curl -s https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_co
 ```
 **What This Installer Does:**
 
-- Downloads the script
-- Installs necessary dependencies
+- Downloads the script `install_ugreen_leds_controller.sh`
+- Installs [ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller)
 - Sets up configuration
 - Starts the service
 
