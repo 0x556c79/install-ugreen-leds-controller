@@ -104,7 +104,7 @@ modprobe -a i2c-dev led-ugreen ledtrig-oneshot ledtrig-netdev
 
 # Ask user if they want to modify the configuration file
 echo "Do you want to modify the LED configuration file now? (y/n)"
-read -r MODIFY_CONF < /dev/tty
+read -r MODIFY_CONF
 if [[ "$MODIFY_CONF" == "y" ]]; then
     nano "$INSTALL_DIR/scripts/ugreen-leds.conf"
 fi
@@ -112,6 +112,7 @@ fi
 # Copy the configuration file
 cp $INSTALL_DIR/scripts/ugreen-leds.conf /etc/ugreen-leds.conf
 chmod 644 /etc/ugreen-leds.conf
+echo "Configuration file for ugreen-leds saved /etc/ugreen-leds.conf."
 
 # Detect active network interfaces and configure services
 echo "Detecting network interfaces..."
