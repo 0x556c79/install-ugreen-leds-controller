@@ -22,9 +22,6 @@ fi
 # Set INSTALL_DIR
 INSTALL_HOME=$(eval echo ~$INSTALL_USER)
 INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
-
-# Create installation directory
-mkdir -p "$INSTALL_DIR"
 cd $INSTALL_HOME
 
 # Change ownership to the original user
