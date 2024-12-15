@@ -13,8 +13,11 @@ else
     INSTALL_USER=$(id -un)
 fi
 
-INSTALL_HOME=$(eval echo ~$INSTALL_USER)
-INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
+# Use INSTALL_DIR if set, otherwise create a default
+if [ -z "$INSTALL_DIR" ]; then
+    INSTALL_HOME=$(eval echo ~$INSTALL_USER)
+    INSTALL_DIR="${INSTALL_HOME}/ugreen_leds_controller"
+fi
 
 # Ensure script is run with sudo
 if [ "$EUID" -ne 0 ]; then
@@ -29,16 +32,24 @@ cd "$INSTALL_DIR"
 # Change ownership to the original user
 chown $INSTALL_USER:$INSTALL_USER "$INSTALL_DIR"
 
+# Create a temporary file to store the installation directory
+INSTALL_DIR_FILE=$(mktemp)
+echo "$INSTALL_DIR" > "$INSTALL_DIR_FILE"
+chmod 666 "$INSTALL_DIR_FILE"
+
 # Download the installation script
-echo "Downloading installation script..."
+echo "Downloading original installation script..."
 curl -L https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh
 
 # Make the script executable
 chmod +x install_ugreen_leds_controller.sh
 
-# Execute the installation script
+# Execute the installation script, passing the temp file
 echo "Running UGREEN LEDs Controller installation..."
-sudo -u $INSTALL_USER ./install_ugreen_leds_controller.sh
+sudo -u $INSTALL_USER INSTALL_DIR_FILE="$INSTALL_DIR_FILE" ./install_ugreen_leds_controller.sh
+
+# Clean up the temporary file
+rm "$INSTALL_DIR_FILE"
 
 echo "UGREEN LEDs Controller installation completed successfully!"
 echo "Installed in: $INSTALL_DIR"
