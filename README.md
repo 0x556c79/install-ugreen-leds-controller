@@ -4,7 +4,7 @@ This repository contains a bash script to install the necessary software for con
 
 ## Quick Installation
 
-Run the following command with sudo or as root to install:
+Run the following command install:
 
 ```bash
 curl -sf https://raw.githubusercontent.com/0x556c79/install_ugreen_leds_controller/main/install_ugreen_leds_controller.sh -o install_ugreen_leds_controller.sh ; sudo bash -i install_ugreen_leds_controller.sh
