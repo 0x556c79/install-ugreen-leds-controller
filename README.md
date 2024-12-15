@@ -2,6 +2,27 @@
 
 This repository contains a bash script to install the necessary software for controlling Ugreen LED controllers.
 
+## Quick Installation
+
+Run the following command to install:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/0x556c79/install-ugreen-leds-controller/main/install.sh)
+```
+**What This Installer Does:**
+
+- Downloads the script
+- Installs necessary dependencies
+- Sets up configuration
+- Starts the service
+
+**Security Considerations:**
+- Always validate what the script does before running
+- Recommend users review the script before executing
+
+
+## Manual Installation
+
 There are two ways to use this script:
 
 **1. Clone the repository:**
